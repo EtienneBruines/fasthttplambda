@@ -5,9 +5,8 @@ import (
 	"net"
 	"net/url"
 
+	"github.com/aws/aws-lambda-go/events"
 	"github.com/buaazp/fasthttprouter"
-	"github.com/eawsy/aws-lambda-go-core/service/lambda/runtime"
-	"github.com/eawsy/aws-lambda-go-event/service/lambda/runtime/event/apigatewayproxyevt"
 	"github.com/valyala/fasthttp"
 	"github.com/valyala/fasthttp/fasthttputil"
 )
@@ -36,7 +35,8 @@ func server(l net.Listener) {
 	}
 }
 
-func Handle(event *apigatewayproxyevt.Event, ctx *runtime.Context) (*ProxyOutput, error) {
+func Handle(event events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+	//func Handle(event *apigatewayproxyevt.Event, ctx *runtime.Context) (*ProxyOutput, error) {
 	l := fasthttputil.NewInmemoryListener()
 	go server(l)
 
@@ -60,7 +60,7 @@ func Handle(event *apigatewayproxyevt.Event, ctx *runtime.Context) (*ProxyOutput
 	if event.IsBase64Encoded {
 		body, err := base64.StdEncoding.DecodeString(event.Body)
 		if err != nil {
-			return nil, err
+			return events.APIGatewayProxyResponse{}, err
 		}
 		req.SetBody(body)
 	} else {
@@ -85,7 +85,7 @@ func Handle(event *apigatewayproxyevt.Event, ctx *runtime.Context) (*ProxyOutput
 		header[string(k)] = string(v)
 	})
 
-	var output = &ProxyOutput{
+	var output = events.APIGatewayProxyResponse{
 		IsBase64Encoded: false,
 		StatusCode:      resp.StatusCode(),
 		Body:            string(resp.Body()),

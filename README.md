@@ -2,35 +2,12 @@
 
 This package allows you to use the `fasthttp` (and `fasthttprouter`) package to create your own service for AWS Lambda.
 
-It also references [eawsy/aws-lambda-go-shim](https://github.com/eawsy/aws-lambda-go-shim) to create the package itself.
+It has been updated to use [aws/aws-lambda-go](github.com/aws/aws-lambda-go) instead of the 
+[eawsy/aws-lambda-go-shim](https://github.com/eawsy/aws-lambda-go-shim) it previously used. 
 
 ## Usage example
 
-```go
-package main
-
-import (
-	"log"
-
-	"github.com/EtienneBruines/fasthttplambda"
-	"github.com/buaazp/fasthttprouter"
-	"github.com/eawsy/aws-lambda-go-core/service/lambda/runtime"
-	"github.com/eawsy/aws-lambda-go-event/service/lambda/runtime/event/apigatewayproxyevt"
-	"github.com/valyala/fasthttp"
-)
-
-var router = new(fasthttprouter.Router)
-
-func Handle(event *apigatewayproxyevt.Event, ctx *runtime.Context) (*fasthttplambda.ProxyOutput, error) {
-	fasthttplambda.Router = router
-	return fasthttplambda.Handle(event, ctx)
-}
-
-func main() {
-	log.Println("Listening on port 8080")
-	fasthttp.ListenAndServe(":8080", router.Handler)
-}
-```
+See `example/example.go`
 
 ## Key components
 

@@ -1,0 +1,21 @@
+# serverless.yml
+
+service: myservice
+
+provider:
+  name: aws
+  runtime: go1.x
+
+package:
+ exclude:
+   - ./**
+ include:
+   - ./bin/**
+
+functions:
+  myfunction:
+    handler: bin/main
+    events:
+      - http:
+          path: /{proxy+}
+          method: get
