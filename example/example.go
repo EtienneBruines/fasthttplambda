@@ -1,30 +1,25 @@
 package main
 
 import (
-	"github.com/EtienneBruines/fasthttplambda"
+	"github.com/Suremeo/fasthttplambda"
 	"github.com/aws/aws-lambda-go/lambda"
-	"github.com/buaazp/fasthttprouter"
+	"github.com/fasthttp/router"
 	"github.com/valyala/fasthttp"
 )
 
-var router fasthttprouter.Router
-
 func HelloWorld(ctx *fasthttp.RequestCtx) {
-	ctx.WriteString("Hello World!")
+	_, _ = ctx.WriteString("Hello World!")
 }
 
 func HelloUniverse(ctx *fasthttp.RequestCtx) {
-	ctx.WriteString("Hello Universe!")
+	_, _ = ctx.WriteString("Hello Universe!")
 }
 
 func main() {
-	router.Handle("GET", "/", HelloWorld)
-	router.Handle("GET", "/hello-universe", HelloUniverse)
+	r := router.New()
 
-	// Usually, we'd listen on a port and handle it as usual
-	//fasthttp.ListenAndServe(":8080", router.Handler)
+	r.GET("/", HelloWorld)
+	r.GET("/hello-universe", HelloUniverse)
 
-	// But when compiling it for lambda, we use this instead:
-	fasthttplambda.Router = &router
-	lambda.Start(fasthttplambda.Handle)
+	lambda.Start(fasthttplambda.Handle(r.Handler))
 }
