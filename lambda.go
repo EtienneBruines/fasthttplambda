@@ -84,9 +84,9 @@ func Handle(handler fasthttp.RequestHandler) func(event events.APIGatewayProxyRe
 		})
 
 		var output = events.APIGatewayProxyResponse{
-			IsBase64Encoded: false,
+			IsBase64Encoded: true,
 			StatusCode:      resp.StatusCode(),
-			Body:            string(resp.Body()),
+			Body:            base64.RawStdEncoding.EncodeToString(resp.Body()),
 			Headers:         header,
 		}
 
